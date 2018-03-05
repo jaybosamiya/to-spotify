@@ -80,8 +80,8 @@ if token:
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
 
-    track_id = find_track(track_name)
     playlist_id = find_or_create_playlist(playlist_name)
+    track_id = find_track(track_name)
 
     results = sp.user_playlist_add_tracks(username, playlist_id, [track_id])
 

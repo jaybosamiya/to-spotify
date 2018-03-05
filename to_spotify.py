@@ -85,9 +85,12 @@ if token:
     playlist_id = find_or_create_playlist(playlist_name)
     track_ids = [find_track(t) for t in track_names]
 
-    results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
-
-    print "Done! :)"
+    track_ids = [x for x in track_ids if x is not None]
+    if len(track_ids) == 0:
+        print "No tracks added"
+    else:
+        results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
+        print "Done adding %d tracks! :)" % len(track_ids)
 
 else:
     print "Can't get token for", username

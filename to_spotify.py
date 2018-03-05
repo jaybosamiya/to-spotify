@@ -5,7 +5,7 @@ import spotipy.util as util
 
 
 def find_track(track_name):
-    print "Searching for: '%s'" % track_name
+    print "[ ] Searching for: '%s'" % track_name
 
     results = sp.search(q=track_name, type='track')
 
@@ -18,7 +18,7 @@ def find_track(track_name):
         })
 
     if len(tracks) == 0:
-        print "No such tracks found"
+        print "[-] No such tracks found"
         return None
 
     for track in tracks:
@@ -29,26 +29,26 @@ def find_track(track_name):
                     name,
                     artist + ' - ' + name,
                     name + ' - ' + artist))):
-            print "Found '%s' perfectly :)" % track_name
+            print "[+] Found '%s' perfectly :)" % track_name
             return track['id']
 
     for i, track in enumerate(tracks):
-        print("%d) %s - %s" % (i, track['artists'], track['name']))
+        print("    %d) %s - %s" % (i, track['artists'], track['name']))
 
     while True:
-        choice = raw_input('Pick a track: ')
+        choice = raw_input('    Pick a track: ')
         if choice == 'n':
-            print "Okay, no such track"
+            print "[+] Okay, no such track"
             return None
 
         try:
             choice = int(choice)
             break
         except ValueError:
-            print "Choose an integer choice!"
+            print "  [!] Choose an integer choice!"
 
         if choice < 0 or choice >= len(tracks):
-            print "Choose a valid track!"
+            print "  [!] Choose a valid track!"
 
     return tracks[choice]['id']
 
@@ -64,11 +64,11 @@ def find_or_create_playlist(playlist_name):
     playlist_ids = [p['id'] for p in playlists if p['name'] == playlist_name]
 
     if len(playlist_ids) > 1:
-        print "Whut?! Impossible number of same named playlists"
+        print "[X] Whut?! Impossible number of same named playlists"
         sys.exit(4)
     elif len(playlist_ids) < 1:
         result = sp.user_playlist_create(username, playlist_name)
-        print "Created playlist"
+        print "[+] Created playlist"
         return result['id']
     else:
         return playlist_ids[0]
@@ -94,10 +94,10 @@ if token:
 
     track_ids = [x for x in track_ids if x is not None]
     if len(track_ids) == 0:
-        print "No tracks added"
+        print "[+] No tracks added"
     else:
         results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
-        print "Done adding %d tracks! :)" % len(track_ids)
+        print "[+] Done adding %d tracks! :)" % len(track_ids)
 
 else:
-    print "Can't get token for", username
+    print "[!] Can't get token for", username

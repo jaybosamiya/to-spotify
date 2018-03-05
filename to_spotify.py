@@ -5,6 +5,8 @@ import spotipy.util as util
 
 
 def find_track(track_name):
+    print "Searching for: '%s'" % track_name
+
     results = sp.search(q=track_name, type='track')
 
     tracks = []
@@ -19,14 +21,17 @@ def find_track(track_name):
         print "No such tracks found"
         return None
 
-    if len(tracks) == 1 and tracks[0]['name'] == track_name:
-        print "Found '%s' perfectly :)" % track_name
-        return tracks[0]['id']
+    if len(tracks) == 1:
+        name = tracks[0]['name']
+        artist = tracks[0]['artists']
+        if ((name == track_name or
+             (artist + ' - ' + name) == track_name or
+             (name + ' - ' + artist) == track_name)):
+            print "Found '%s' perfectly :)" % track_name
+            return tracks[0]['id']
 
     for i, track in enumerate(tracks):
         print("%d) %s - %s" % (i, track['artists'], track['name']))
-
-    print("")
 
     while True:
         choice = raw_input('Pick a track: ')

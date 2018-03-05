@@ -4,12 +4,12 @@ import sys
 import spotipy
 import spotipy.util as util
 
-if len(sys.argv) > 3:
+if len(sys.argv) == 4:
     username = sys.argv[1]
     playlist_id = sys.argv[2]
-    track_ids = sys.argv[3:]
+    track = sys.argv[3]
 else:
-    print "Usage: %s username playlist_id track_id ..." % (sys.argv[0],)
+    print "Usage: %s username playlist_id track" % (sys.argv[0],)
     sys.exit()
 
 scope = 'playlist-modify-public'
@@ -18,7 +18,42 @@ token = util.prompt_for_user_token(username, scope)
 if token:
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
-    results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
-    pprint.pprint(results)
+    results = sp.search(q=track, type='track')
+
+    tracks = []
+    for track in results['tracks']['items']:
+        tracks.append({
+            'name': track['name'],
+            'artists': ', '.join(a['name'] for a in track['artists']),
+            'id': track['id']
+        })
+
+    if len(tracks) == 0:
+        print "No such tracks found"
+        sys.exit(1)
+
+    for i, track in enumerate(tracks):
+        print("%d) %s - %s" % (i, track['artists'], track['name']))
+
+    print("")
+    choice = raw_input('Pick a track: ')
+
+    if choice in ('', 'n'):
+        print "Nothing added"
+        sys.exit(0)
+
+    try:
+        choice = int(choice)
+    except ValueError:
+        print "Choose an integer choice!"
+        sys.exit(2)
+
+    if choice < 0 or choice >= len(tracks):
+        print "Choose a valid track!"
+        sys.exit(3)
+
+    print "TODO: Add this track in :)"
+    # results = sp.user_playlist_add_tracks(username, playlist_id, track)
+
 else:
     print "Can't get token for", username

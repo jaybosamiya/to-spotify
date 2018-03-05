@@ -17,31 +17,33 @@ def find_track(track_name):
 
     if len(tracks) == 0:
         print "No such tracks found"
-        sys.exit(1)
+        return None
+
+    if len(tracks) == 1 and tracks[0]['name'] == track_name:
+        print "Found '%s' perfectly :)" % track_name
+        return tracks[0]['id']
 
     for i, track in enumerate(tracks):
         print("%d) %s - %s" % (i, track['artists'], track['name']))
 
     print("")
-    choice = raw_input('Pick a track: ')
 
-    if choice in ('', 'n'):
-        print "Nothing added"
-        sys.exit(0)
+    while True:
+        choice = raw_input('Pick a track: ')
+        if choice == 'n':
+            print "Okay, no such track"
+            return None
 
-    try:
-        choice = int(choice)
-    except ValueError:
-        print "Choose an integer choice!"
-        sys.exit(2)
+        try:
+            choice = int(choice)
+            break
+        except ValueError:
+            print "Choose an integer choice!"
 
-    if choice < 0 or choice >= len(tracks):
-        print "Choose a valid track!"
-        sys.exit(3)
+        if choice < 0 or choice >= len(tracks):
+            print "Choose a valid track!"
 
-    track_id = tracks[choice]['id']
-
-    return track_id
+    return tracks[choice]['id']
 
 
 def find_or_create_playlist(playlist_name):

@@ -1,4 +1,3 @@
-import pprint
 import sys
 
 import spotipy
@@ -6,10 +5,10 @@ import spotipy.util as util
 
 if len(sys.argv) == 4:
     username = sys.argv[1]
-    playlist_id = sys.argv[2]
-    track = sys.argv[3]
+    playlist_name = sys.argv[2]
+    track_name = sys.argv[3]
 else:
-    print "Usage: %s username playlist_id track" % (sys.argv[0],)
+    print "Usage: %s username playlist_name track" % (sys.argv[0],)
     sys.exit()
 
 scope = 'playlist-modify-public'
@@ -18,7 +17,7 @@ token = util.prompt_for_user_token(username, scope)
 if token:
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
-    results = sp.search(q=track, type='track')
+    results = sp.search(q=track_name, type='track')
 
     tracks = []
     for track in results['tracks']['items']:
@@ -52,8 +51,28 @@ if token:
         print "Choose a valid track!"
         sys.exit(3)
 
-    print "TODO: Add this track in :)"
-    # results = sp.user_playlist_add_tracks(username, playlist_id, track)
+    track_id = tracks[choice]['id']
+
+    playlists = []
+    while True:
+        results = sp.current_user_playlists(offset=len(playlists))
+        playlists.extend(results['items'])
+        if (len(playlists) >= results['total']):
+            break
+
+    playlist_ids = [p['id'] for p in playlists if p['name'] == playlist_name]
+
+    if len(playlist_ids) > 1:
+        print "Whut?! Impossible number of same named playlists"
+        sys.exit(4)
+    elif len(playlist_ids) < 1:
+        playlist_id = sp.user_playlist_create(username, playlist_name)['id']
+    else:
+        playlist_id = playlist_ids[0]
+
+    results = sp.user_playlist_add_tracks(username, playlist_id, [track_id])
+
+    print "Done! :)"
 
 else:
     print "Can't get token for", username

@@ -64,7 +64,6 @@ def find_or_create_playlist(playlist_name):
         print "Created playlist"
         return result['id']
     else:
-        print "Found playlist"
         return playlist_ids[0]
 
 

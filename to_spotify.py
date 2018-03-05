@@ -3,17 +3,6 @@ import sys
 import spotipy
 import spotipy.util as util
 
-if len(sys.argv) == 4:
-    username = sys.argv[1]
-    playlist_name = sys.argv[2]
-    track_name = sys.argv[3]
-else:
-    print "Usage: %s username playlist_name track" % (sys.argv[0],)
-    sys.exit()
-
-scope = 'playlist-modify-public'
-token = util.prompt_for_user_token(username, scope)
-
 
 def find_track(track_name):
     results = sp.search(q=track_name, type='track')
@@ -73,6 +62,17 @@ def find_or_create_playlist(playlist_name):
     else:
         return (playlist_ids[0])
 
+
+if len(sys.argv) == 4:
+    username = sys.argv[1]
+    playlist_name = sys.argv[2]
+    track_name = sys.argv[3]
+else:
+    print "Usage: %s username playlist_name track" % (sys.argv[0],)
+    sys.exit()
+
+scope = 'playlist-modify-public'
+token = util.prompt_for_user_token(username, scope)
 
 if token:
     sp = spotipy.Spotify(auth=token)

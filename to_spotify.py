@@ -21,14 +21,16 @@ def find_track(track_name):
         print "No such tracks found"
         return None
 
-    if len(tracks) == 1:
-        name = tracks[0]['name']
-        artist = tracks[0]['artists']
-        if ((name == track_name or
-             (artist + ' - ' + name) == track_name or
-             (name + ' - ' + artist) == track_name)):
+    for track in tracks:
+        name = track['name']
+        artist = track['artists']
+        if (track_name.lower() in (
+                x.lower() for x in (
+                    name,
+                    artist + ' - ' + name,
+                    name + ' - ' + artist))):
             print "Found '%s' perfectly :)" % track_name
-            return tracks[0]['id']
+            return track['id']
 
     for i, track in enumerate(tracks):
         print("%d) %s - %s" % (i, track['artists'], track['name']))

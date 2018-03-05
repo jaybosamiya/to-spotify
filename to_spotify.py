@@ -67,7 +67,7 @@ def find_or_create_playlist(playlist_name):
         return playlist_ids[0]
 
 
-if len(sys.argv) == 4:
+if len(sys.argv) >= 4:
     username = sys.argv[1]
     playlist_name = sys.argv[2]
     track_names = sys.argv[3:]

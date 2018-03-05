@@ -14,9 +14,8 @@ else:
 scope = 'playlist-modify-public'
 token = util.prompt_for_user_token(username, scope)
 
-if token:
-    sp = spotipy.Spotify(auth=token)
-    sp.trace = False
+
+def find_track(track_name):
     results = sp.search(q=track_name, type='track')
 
     tracks = []
@@ -53,6 +52,10 @@ if token:
 
     track_id = tracks[choice]['id']
 
+    return track_id
+
+
+def find_or_create_playlist(playlist_name):
     playlists = []
     while True:
         results = sp.current_user_playlists(offset=len(playlists))
@@ -66,9 +69,17 @@ if token:
         print "Whut?! Impossible number of same named playlists"
         sys.exit(4)
     elif len(playlist_ids) < 1:
-        playlist_id = sp.user_playlist_create(username, playlist_name)['id']
+        return (sp.user_playlist_create(username, playlist_name)['id'])
     else:
-        playlist_id = playlist_ids[0]
+        return (playlist_ids[0])
+
+
+if token:
+    sp = spotipy.Spotify(auth=token)
+    sp.trace = False
+
+    track_id = find_track(track_name)
+    playlist_id = find_or_create_playlist(playlist_name)
 
     results = sp.user_playlist_add_tracks(username, playlist_id, [track_id])
 

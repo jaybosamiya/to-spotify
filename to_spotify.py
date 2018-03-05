@@ -60,9 +60,12 @@ def find_or_create_playlist(playlist_name):
         print "Whut?! Impossible number of same named playlists"
         sys.exit(4)
     elif len(playlist_ids) < 1:
-        return (sp.user_playlist_create(username, playlist_name)['id'])
+        result = sp.user_playlist_create(username, playlist_name)
+        print "Created playlist"
+        return result['id']
     else:
-        return (playlist_ids[0])
+        print "Found playlist"
+        return playlist_ids[0]
 
 
 if len(sys.argv) == 4:

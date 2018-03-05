@@ -70,9 +70,9 @@ def find_or_create_playlist(playlist_name):
 if len(sys.argv) == 4:
     username = sys.argv[1]
     playlist_name = sys.argv[2]
-    track_name = sys.argv[3]
+    track_names = sys.argv[3:]
 else:
-    print "Usage: %s username playlist_name track" % (sys.argv[0],)
+    print "Usage: %s username playlist_name tracks..." % (sys.argv[0],)
     sys.exit()
 
 scope = 'playlist-modify-public'
@@ -83,9 +83,9 @@ if token:
     sp.trace = False
 
     playlist_id = find_or_create_playlist(playlist_name)
-    track_id = find_track(track_name)
+    track_ids = [find_track(t) for t in track_names]
 
-    results = sp.user_playlist_add_tracks(username, playlist_id, [track_id])
+    results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
 
     print "Done! :)"
 

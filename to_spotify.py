@@ -18,7 +18,7 @@ def find_track(track_name):
         })
 
     if len(tracks) == 0:
-        print "[-] No such tracks found"
+        print "[!] No such tracks found"
         return None
 
     for track in tracks:
